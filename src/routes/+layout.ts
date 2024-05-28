@@ -12,22 +12,27 @@ export const load: LayoutLoad = async({fetch, data, depends}: any) => {
     depends('supabase:auth')
 
     // Create the client and get the session if it exists
+
     const supabase = createBrowserClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON, {
         global: {
             fetch
         },
         cookies: {
             get(key) {
+                console.log('creating session')
                 // If we're on the server, return the session directly/safely
                 if (!isBrowser) {
                     return JSON.stringify(data.session)
                 }
                 // otherwise, get the cookie we have stored.
-                const cookie = parse(document.cookie)
+                
+                const cookie = parse(`cookie ${document.cookie}`)
+                console.log(`cookie ${cookie[key]}`)
                 return cookie[key]
             }
         }
     });
+
 
     // pull the session from the supabase we initialized at load
     const {
@@ -35,5 +40,6 @@ export const load: LayoutLoad = async({fetch, data, depends}: any) => {
     } = await supabase.auth.getSession()
 
     // Returns to our layout.svelte
+    console.log(`Layout.ts returning user: ${supabase.auth.getUser()} and session: ${session?.user}`)
     return { supabase, session }
 }
