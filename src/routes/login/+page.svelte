@@ -19,10 +19,17 @@
     if (error) console.error('Error logging in with Google:', error.message);
   }
     console.log(supabase,session?.user.email)
+
+    async function signInWithGithub() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github'
+    });
+    if (error) console.error('Error logging in with Google:', error.message);
+  }
 </script>
 
 <div>
-    <form action="">
         <button on:click={signInWithGoogle}>Login with google</button>
-    </form>
+        <button on:click={signInWithGithub}>Login with github</button>
+
 </div>
